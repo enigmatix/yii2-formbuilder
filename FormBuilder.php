@@ -20,7 +20,8 @@ class FormBuilder extends Widget
 
         echo Html::tag('div','',['id' => $this->id]);
         
-        $this->view->registerJs("jQuery('#$this->id').formBuilder();'");
+        $this->view->registerJs("jQuery('#$this->id').formBuilder();");
 
+        FormBuilderAsset::register($this->view);
     }
 }
