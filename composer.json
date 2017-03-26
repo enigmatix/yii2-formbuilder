@@ -1,0 +1,22 @@
+{
+    "name": "enigmatix/yii2-formbuilder",
+    "description": "A simple wrapper for the jQuery formBuilder.  This package enables the use of the formBuilder via a yii2 widget.  The package does not ship with a copy of the jQuery library.  Instead it is loaded directly via bower.",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joel Small",
+            "email": "joel.small@biscon.com.au"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "bower-asset/formBuilder": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "enigmatix\\formbuilder\\": ""
+        }
+    }
+}
