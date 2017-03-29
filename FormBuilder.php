@@ -34,7 +34,7 @@ class FormBuilder extends Widget
         $this->registerAssets();
     }
 
-    protected function register(){
+    protected function registerAssets(){
         $view = $this->view;
         $view->registerJs("$('#$this->id').formBuilder({$this->getJavascriptOptions()});");
         $view->registerJs($this->saveMethod());
