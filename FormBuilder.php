@@ -10,9 +10,14 @@ namespace enigmatix\formbuilder;
 
 
 use yii\base\Widget;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\StringHelper;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+
 
 
 class FormBuilder extends Widget
@@ -23,21 +28,32 @@ class FormBuilder extends Widget
     ];
 
 
-    var $pluginOptions = [];
+    var $pluginOptions      = [];
 
-    var $saveAction = 'post';
+    var $saveButtonSelector = '.form-builder-save';
+
+    var $saveAction         = 'post';
+
+    var $saveUrl;
+    
+    var $controller;
+    /**
+     * @var ActiveRecord
+     */
+    var $model;
 
     public function run() {
 
-        echo Html::tag('div','',['id' => $this->id]);
-        
         $this->registerAssets();
+
+        return Html::tag('div','',['id' => $this->id]);
+
     }
 
     protected function registerAssets(){
         $view = $this->view;
         $view->registerJs("$('#$this->id').formBuilder({$this->getJavascriptOptions()});");
-        $view->registerJs($this->saveMethod());
+        $view->registerJs($this->prepareSaveMethod($this->saveButtonSelector, $this->saveAction));
 
         FormBuilderAsset::register($view);
     }
@@ -48,17 +64,32 @@ class FormBuilder extends Widget
 
     }
 
-    protected function saveMethod(){
-        switch ($this->saveAction){
+    public function prepareSaveMethod($saveButtonSelector, $saveAction){
+
+        $saveUrl            = $this->saveUrl;
+        $formId             = $this->id;
+
+        switch ($saveAction){
             case 'post':
             default:
 
                 return '
-  var saveBtn = document.querySelector(\'.form-builder-save\');
-  saveBtn.onclick = function() {
-    $.post(\'/\',   $("#'.$this->id.'").data(\'formBuilder\').formData);
-  };';
+  $("'.$saveButtonSelector.'").click(function() {
+    $.post(\''.$saveUrl.'\',   $("#'.$formId.'").data(\'formBuilder\').formData);
+  });';
+
             break;
         }
+    }
+
+    public static function getValueList($values)
+    {
+        $return = [];
+
+        foreach ($values as $value){
+            $return[$value['value']] = $value['label'];
+        }
+
+        return $return;
     }
 }
