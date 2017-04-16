@@ -1,5 +1,5 @@
-Yii2 widget wrapper for the Jquery formBuilder interface
-========================================================
+Yii2 wrapper for the jQuery formBuilder library by Kevin Chappell
+=================================================================
 A simple wrapper for the jQuery formBuilder.  This package enables the use of the formBuilder via a yii2 widget.  The package does not ship with a copy of the jQuery library.  Instead it is loaded directly via bower.
 
 Installation
