@@ -13,6 +13,7 @@ use yii\base\Widget;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 use yii\helpers\Json;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
@@ -23,9 +24,7 @@ use yii\widgets\ActiveForm;
 class FormBuilder extends Widget
 {
 
-    protected $pluginDefaults = [
-        'dataType' => 'json',
-    ];
+    protected $pluginDefaults = [];
 
 
     var $pluginOptions      = [];
@@ -52,7 +51,7 @@ class FormBuilder extends Widget
 
     protected function registerAssets(){
         $view = $this->view;
-        $view->registerJs("$('#$this->id').formBuilder({$this->getJavascriptOptions()});");
+        $view->registerJs("var ".$this->getJsID()." = $('#$this->id').formBuilder({$this->getJavascriptOptions()});");
         $view->registerJs($this->prepareSaveMethod($this->saveButtonSelector, $this->saveAction));
 
         FormBuilderAsset::register($view);
@@ -75,7 +74,7 @@ class FormBuilder extends Widget
 
                 return '
   $("'.$saveButtonSelector.'").click(function() {
-    $.post(\''.$saveUrl.'\',   $("#'.$formId.'").data(\'formBuilder\').formData);
+  $.post(\''.$saveUrl.'\',   '.$this->getJsID().'.formData);
   });';
 
             break;
@@ -91,5 +90,9 @@ class FormBuilder extends Widget
         }
 
         return $return;
+    }
+
+    protected function getJsID(){
+        return Inflector::camelize("yii2".$this->id."fb");
     }
 }
