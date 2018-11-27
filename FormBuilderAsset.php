@@ -12,7 +12,7 @@ use yii\web\AssetBundle;
 
 class FormBuilderAsset extends AssetBundle
 {
-    public $sourcePath = '@vendor/kevinchappell/form-builder/dist';
+    public $sourcePath = '@vendor/kevinchappell/form-builder/src';
     public $css = [
         'form-builder.min.css',
 //        'form-render.min.css',
