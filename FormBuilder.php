@@ -24,7 +24,18 @@ use yii\widgets\ActiveForm;
 class FormBuilder extends Widget
 {
 
-    protected $pluginDefaults = [];
+    protected $pluginDefaults = [
+        'dataType'              => 'json',
+        'showActionButtons'     => false,
+        'disableFields' => [
+            'header',
+            'paragraph',
+            'number',
+            'autocomplete',
+            'hidden',
+            'file',
+            'button']
+    ];
 
 
     var $pluginOptions      = [];
@@ -34,7 +45,13 @@ class FormBuilder extends Widget
     var $saveAction         = 'post';
 
     var $saveUrl;
-    
+
+    var $fieldSelector;
+
+    var $saveMethod         = 'ajax';
+
+    var $formId;
+
     var $controller;
     /**
      * @var ActiveRecord
@@ -51,8 +68,8 @@ class FormBuilder extends Widget
 
     protected function registerAssets(){
         $view = $this->view;
-        $view->registerJs("var ".$this->getJsID()." = $('#$this->id').formBuilder({$this->getJavascriptOptions()});");
-        $view->registerJs($this->prepareSaveMethod($this->saveButtonSelector, $this->saveAction));
+        $view->registerJs("window.{$this->getJsID()} = $('#$this->id').formBuilder({$this->getJavascriptOptions()});");
+        $view->registerJs($this->prepareSaveMethod());
 
         FormBuilderAsset::register($view);
     }
@@ -63,20 +80,33 @@ class FormBuilder extends Widget
 
     }
 
-    public function prepareSaveMethod($saveButtonSelector, $saveAction){
+    public function prepareSaveMethod(){
 
+        $selector           = $this->saveButtonSelector;
+        $fieldSelector      = $this->fieldSelector;
+        $saveAction         = $this->saveAction;
         $saveUrl            = $this->saveUrl;
-        $formId             = $this->id;
+        $formBuilderId      = $this->id;
+        $method             = $this->saveMethod;
+        $jsID               = $this->getJsID();
+        $formId             = $this->formId;
 
-        switch ($saveAction){
-            case 'post':
+        switch ($method){
+            case 'field':
+                return <<<JS
+$('#{$formId}').on('beforeSubmit', function (e) {
+	$('{$fieldSelector}').attr('value', window.{$jsID}.formData);
+	return true;
+});
+JS;
+                break;
+            case 'ajax':
             default:
-
-                return '
-  $("'.$saveButtonSelector.'").click(function() {
-  $.post(\''.$saveUrl.'\',   '.$this->getJsID().'.formData);
-  });';
-
+                return <<<JS
+  $("{$selector}").click(function() {
+  $.{$saveAction}('{$saveUrl}', window.{$jsID}.formData);
+  });
+JS;
             break;
         }
     }
