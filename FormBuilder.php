@@ -33,7 +33,6 @@ class FormBuilder extends Widget
             'number',
             'autocomplete',
             'hidden',
-            'file',
             'button']
     ];
 
